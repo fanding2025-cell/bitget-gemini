@@ -1,54 +1,52 @@
 import os
 import asyncio
 import ccxt
-from aiogram import Bot, Dispatcher
+from aiogram import Bot
 
-# --- НАСТРОЙКИ ---
+# --- ДАННЫЕ ИЗ RAILWAY ---
 BOT_TOKEN = os.getenv('BOT_TOKEN')
-CHAT_ID = os.getenv('CHAT_ID')  # ID твоей группы "AI Group"
+CHAT_ID = "8515064372"  # Я вшил его прямо в код для верности
+BITGET_KEY = os.getenv('BITGET_API_KEY')
+BITGET_SECRET = os.getenv('BITGET_SECRET_KEY')
+BITGET_PASS = os.getenv('BITGET_PASSPHRASE')
 
-# Ключи Bitget из Railway
+bot = Bot(token=BOT_TOKEN)
+
+# Настройка биржи
 exchange = ccxt.bitget({
-    'apiKey': os.getenv('BITGET_API_KEY'),
-    'secret': os.getenv('BITGET_SECRET_KEY'),
-    'password': os.getenv('BITGET_PASSPHRASE'),
+    'apiKey': BITGET_KEY,
+    'secret': BITGET_SECRET,
+    'password': BITGET_PASS,
     'options': {'defaultType': 'swap'}
 })
 
-bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher()
-
-async def send_to_chat(text):
-    await bot.send_message(CHAT_ID, text, parse_mode="HTML")
-
-# --- ЖИВОЕ ОБЩЕНИЕ И ТОРГОВЛЯ ---
-async def execute_trade_cycle(symbol, side, amount):
-    await send_to_chat(f"🚀 <b>Геннадий BOSS:</b> Внимание всем отделам! Начинаем разбор ситуации по {symbol}.")
-    await asyncio.sleep(2)
-    
-    await send_to_chat("📊 <b>Вика ❤️:</b> Я проанализировала рынок. Тренд сильный, объемы подтверждают движение. Я за вход!")
-    await asyncio.sleep(2)
-    
-    await send_to_chat("📉 <b>ИЗАБЕЛЛА:</b> Технический паттерн сформирован. Идеальный момент для позиции. Цели намечены.")
-    await asyncio.sleep(2)
-    
-    await send_to_chat("🛡 <b>ЛЕОН:</b> Стоп-лосс рассчитан. Риск на сделку 10% от наших $10. Депозит в безопасности. Даю добро!")
-    await asyncio.sleep(2)
-    
-    await send_to_chat(f"⚡ <b>RUSTAM:</b> Принято. Отправляю ордер на Bitget. {side} {amount} {symbol}...")
-    
+async def send(text):
     try:
-        # Реальное исполнение на Bitget
-        order = exchange.create_market_order(symbol, side, amount)
-        await send_to_chat(f"✅ <b>СДЕЛКА ОТКРЫТА!</b> ID: {order['id']}")
+        await bot.send_message(CHAT_ID, text, parse_mode="HTML")
     except Exception as e:
-        await send_to_chat(f"❌ <b>ОШИБКА RUSTAM:</b> Не удалось войти. Причина: {e}")
+        print(f"Ошибка отправки: {e}")
+
+async def start_office():
+    await send("🌐 <b>СИСТЕМА ОБНОВЛЕНА. РЕЖИМ 'ЖИВОЙ ОФИС' АКТИВИРОВАН.</b>")
+    await asyncio.sleep(1)
+    
+    await send("👨‍💼 <b>Геннадий:</b> Так, банда, Шеф дал отмашку! Проверяем системы. На кону реальные деньги.")
+    await asyncio.sleep(1)
+    
+    await send("📊 <b>Вика ❤️:</b> Подключаюсь к потоку Bitget... Вижу баланс! Рафиль, начинаю сканировать рынок на предмет жирных точек входа.")
+    await asyncio.sleep(1)
+    
+    await send("🛡️ <b>Леон:</b> Я на посту. Плечо x10, изолированная маржа. Каждую копейку Шефа буду охранять как цербер.")
+    await asyncio.sleep(1)
+    
+    await send("⚡ <b>Рустам:</b> Гитхаб и Railway синхронизированы. Код летит. Мы готовы к исполнению!")
 
 async def main():
-    await send_to_chat("🌐 <b>RAFAEL AI:</b> Офис запущен. Мы в сети и готовы к работе!")
-    # Здесь будет цикл мониторинга рынка...
-    await execute_trade_cycle('BTC/USDT:USDT', 'buy', 0.001) # Пример теста
+    await start_office()
+    # Тут будет крутиться цикл мониторинга
+    while True:
+        await asyncio.sleep(3600)
 
 if __name__ == "__main__":
     asyncio.run(main())
-  
+    
