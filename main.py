@@ -11,7 +11,7 @@ from aiogram.enums import ParseMode
 #  КОНФИГУРАЦИЯ
 # ══════════════════════════════════════════
 OWNER_ID   = 8515064372
-CHAT_ID    = -1003738678087(os.getenv("CHAT_ID", "0"))
+CHAT_ID    = int(os.getenv("-1003738678087", "0"))
 GEMINI_KEY = os.getenv("GEMINI_API_KEY")
 
 genai.configure(api_key=GEMINI_KEY)
