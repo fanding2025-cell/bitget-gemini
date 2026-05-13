@@ -2,7 +2,9 @@ import asyncio
 import os
 import random
 import ccxt.async_support as ccxt
-import google.generativeai as genai
+from google import genai
+...
+client = genai.Client(api_key=GEMINI_API_KEY)
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
 from aiogram.enums import ParseMode
