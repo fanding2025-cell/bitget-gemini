@@ -198,12 +198,12 @@ def format_market_ctx(data: dict) -> str:
     )
 
 # ══════════════════════════════════════════
-#  GEMINI — ГЕНЕРАЦИЯ ОТВЕТА
+#  GEMINI 2.0 — ГЕНЕРАЦИЯ ОТВЕТА
 # ══════════════════════════════════════════
 async def ask_gemini(persona_key: str, user_message: str, market_ctx: str = "") -> str:
     persona = PERSONAS[persona_key]
     model   = genai.GenerativeModel(
-        model_name="model_name="gemini-2.0-flash"
+        model_name="gemini-2.0-flash",        # ← исправлено
         system_instruction=persona["system"],
     )
     prompt = user_message
@@ -316,13 +316,12 @@ def register_handlers(key: str, dp: Dispatcher):
             await message.reply(
                 f"✅ <b>Bitget подключён</b>\n\n"
                 f"BTC/USDT: <b>${data['price']:,.2f}</b> ({data['change']:+.2f}%)\n"
-                f"RSI: <b>{data['rsi']:.1f}</b> | "
-                f"MA7: <b>${data['ma7']:,.0f}</b>",
+                f"RSI: <b>{data['rsi']:.1f}</b> | MA7: <b>${data['ma7']:,.0f}</b>",
                 parse_mode=ParseMode.HTML
             )
         except Exception as e:
             await message.reply(
-                f"❌ <b>Ошибка подключения к Bitget:</b>\n{e}",
+                f"❌ <b>Ошибка Bitget:</b>\n{e}",
                 parse_mode=ParseMode.HTML
             )
 
@@ -365,20 +364,36 @@ def register_handlers(key: str, dp: Dispatcher):
 async def main():
     print("🚀 Boyar Investment — старт...")
 
-    # Сбрасываем вебхуки и старую очередь у всех ботов
+    # Проверяем токены
+    dead_bots = []
+    for key, bot in bots.items():
+        try:
+            me = await bot.get_me()
+            print(f"  ✅ {key} — @{me.username}")
+        except Exception as e:
+            print(f"  ❌ {key} — невалидный токен: {e}")
+            dead_bots.append(key)
+
+    for key in dead_bots:
+        bots.pop(key)
+        dispatchers.pop(key)
+
+    # Сбрасываем вебхуки
     for key, bot in bots.items():
         try:
             await bot.delete_webhook(drop_pending_updates=True)
-            print(f"  🔄 {PERSONAS[key]['display']} — вебхук сброшен")
         except Exception as e:
-            print(f"  ⚠️ {key} — ошибка сброса: {e}")
+            print(f"  ⚠️ {key} вебхук: {e}")
 
     # Регистрируем хендлеры
     for key, dp in dispatchers.items():
         register_handlers(key, dp)
         print(f"  ✅ {PERSONAS[key]['display']} готов")
 
-    # Запускаем поллинг всех ботов параллельно
+    if not dispatchers:
+        print("❌ Нет рабочих ботов!")
+        return
+
     tasks = [
         dp.start_polling(
             bots[key],
@@ -389,8 +404,8 @@ async def main():
         for key, dp in dispatchers.items()
     ]
 
-    print("✅ Все агенты запущены!\n")
-    await asyncio.gather(*tasks)
+    print(f"✅ Все агенты запущены!\n")
+    await asyncio.gather(*tasks, return_exceptions=True)
 
 if __name__ == "__main__":
     asyncio.run(main())
