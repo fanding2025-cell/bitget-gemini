@@ -174,4 +174,4 @@ def register_handlers(key, dp):
         if not is_group(m): return
         try:
             data = await fetch_market_data()
-            await m.reply(f"✅ <b>Bitget подключён</b>\nBTC/USDT: <b>${data['price']:,.2f}</b> ({data['change']:+.2f}%
+            await m.reply(f"""✅ <b>Bitget подключён</b>\nBTC/USDT: <b>${data['price']:,.2f}</b> ({data['change']:+.2f}%)
