@@ -121,11 +121,9 @@ for key, token in TOKENS.items():
 #  ПРОВЕРКИ ДОСТУПА
 # ══════════════════════════════════════════
 def is_group(message: types.Message) -> bool:
-    """Сообщение из нашей группы."""
     return message.chat.id == CHAT_ID
 
 def is_owner(message: types.Message) -> bool:
-    """Сообщение от владельца в нашей группе."""
     return message.chat.id == CHAT_ID and message.from_user.id == OWNER_ID
 
 # ══════════════════════════════════════════
@@ -139,9 +137,9 @@ async def fetch_market_data() -> dict:
         "enableRateLimit": True,
     })
     try:
-        ticker = await exchange.fetch_ticker("BTC/USDT")
-        ohlcv  = await exchange.fetch_ohlcv("BTC/USDT", "1h", limit=24)
-        ob     = await exchange.fetch_order_book("BTC/USDT", limit=20)
+        ticker  = await exchange.fetch_ticker("BTC/USDT")
+        ohlcv   = await exchange.fetch_ohlcv("BTC/USDT", "1h", limit=24)
+        ob      = await exchange.fetch_order_book("BTC/USDT", limit=20)
 
         closes  = [c[4] for c in ohlcv]
         highs   = [c[2] for c in ohlcv]
@@ -154,32 +152,31 @@ async def fetch_market_data() -> dict:
         avg_l  = sum(losses) / len(losses) if losses else 1
         rsi    = 100 - (100 / (1 + avg_g / (avg_l or 1)))
 
-        ma7  = sum(closes[-7:]) / 7
-        ma24 = sum(closes) / len(closes)
+        ma7   = sum(closes[-7:]) / 7
+        ma24  = sum(closes) / len(closes)
 
         high24    = max(highs)
         low24     = min(lows)
         fib_range = high24 - low24
-        fib_levels = {
-            "0.236": round(low24 + 0.236 * fib_range, 2),
-            "0.382": round(low24 + 0.382 * fib_range, 2),
-            "0.500": round(low24 + 0.500 * fib_range, 2),
-            "0.618": round(low24 + 0.618 * fib_range, 2),
-        }
 
         bid_wall = max(ob["bids"], key=lambda x: x[1]) if ob["bids"] else [0, 0]
         ask_wall = max(ob["asks"], key=lambda x: x[1]) if ob["asks"] else [0, 0]
 
         return {
-            "price":      ticker["last"],
-            "change":     ticker.get("percentage", 0) or 0,
-            "volume":     ticker.get("quoteVolume", 0) or 0,
-            "high24":     high24,
-            "low24":      low24,
-            "ma7":        ma7,
-            "ma24":       ma24,
-            "rsi":        rsi,
-            "fib":        fib_levels,
+            "price":    ticker["last"],
+            "change":   ticker.get("percentage", 0) or 0,
+            "volume":   ticker.get("quoteVolume", 0) or 0,
+            "high24":   high24,
+            "low24":    low24,
+            "ma7":      ma7,
+            "ma24":     ma24,
+            "rsi":      rsi,
+            "fib": {
+                "0.236": round(low24 + 0.236 * fib_range, 2),
+                "0.382": round(low24 + 0.382 * fib_range, 2),
+                "0.500": round(low24 + 0.500 * fib_range, 2),
+                "0.618": round(low24 + 0.618 * fib_range, 2),
+            },
             "bid_wall":   bid_wall,
             "ask_wall":   ask_wall,
             "avg_volume": sum(volumes) / len(volumes),
@@ -196,8 +193,8 @@ def format_market_ctx(data: dict) -> str:
         f"RSI(24): {data['rsi']:.1f}\n"
         f"Объём 24ч: ${data['volume']/1e6:.1f}M\n"
         f"Фибоначчи: 0.382=${data['fib']['0.382']} | 0.618=${data['fib']['0.618']}\n"
-        f"Bid-стена: ${data['bid_wall'][0]:,.0f} | объём {data['bid_wall'][1]:.2f} BTC\n"
-        f"Ask-стена: ${data['ask_wall'][0]:,.0f} | объём {data['ask_wall'][1]:.2f} BTC"
+        f"Bid-стена: ${data['bid_wall'][0]:,.0f} | {data['bid_wall'][1]:.2f} BTC\n"
+        f"Ask-стена: ${data['ask_wall'][0]:,.0f} | {data['ask_wall'][1]:.2f} BTC"
     )
 
 # ══════════════════════════════════════════
@@ -219,7 +216,7 @@ async def ask_gemini(persona_key: str, user_message: str, market_ctx: str = "") 
         return f"⚠️ Gemini недоступен: {e}"
 
 # ══════════════════════════════════════════
-#  ОПРЕДЕЛЕНИЕ АГЕНТА ПО ИМЕНИ В ТЕКСТЕ
+#  ОПРЕДЕЛЕНИЕ АГЕНТА ПО ИМЕНИ
 # ══════════════════════════════════════════
 def detect_agent(text: str) -> str | None:
     lower = text.lower()
@@ -233,13 +230,13 @@ def detect_agent(text: str) -> str | None:
 #  РЕЖИМ «КОНСИЛИУМ» (/work)
 # ══════════════════════════════════════════
 CONSILIUM_PLAN = [
-    ("adrian",   "Дай краткий анализ новостного и макроэкономического фона для BTC прямо сейчас."),
-    ("vika",     "Проанализируй тренд, RSI и объёмы. Дай вывод — покупать или ждать?"),
-    ("demian",   "Проанализируй стакан (bid/ask стены). Куда давление? Есть ли крупные заявки?"),
-    ("izabella", "Разбери уровни Фибоначчи и ключевые паттерны. Где поддержка и сопротивление?"),
-    ("leon",     "Рассчитай риски для входа с плечом x10. Где стоп-лосс? Сколько % депозита в риск?"),
-    ("rustam",   "Подтверди техническую готовность ордера. API работает? Параметры входа?"),
-    ("gena",     "Выслушал команду. Дай финальное решение: ВХОДИМ или ЖДЁМ? Почему?"),
+    ("adrian",   "Дай краткий анализ новостного и макроэкономического фона для BTC."),
+    ("vika",     "Проанализируй тренд, RSI и объёмы. Покупать или ждать?"),
+    ("demian",   "Проанализируй стакан (bid/ask). Куда давление? Есть крупные заявки?"),
+    ("izabella", "Разбери уровни Фибоначчи. Где поддержка и сопротивление?"),
+    ("leon",     "Рассчитай риски с плечом x10. Где стоп-лосс? Сколько % депозита в риск?"),
+    ("rustam",   "Подтверди техническую готовность ордера. Параметры входа?"),
+    ("gena",     "Выслушал команду. Финальное решение: ВХОДИМ или ЖДЁМ? Почему?"),
 ]
 
 async def run_consilium(chat_id: int):
@@ -249,7 +246,7 @@ async def run_consilium(chat_id: int):
     except Exception as e:
         await bots["gena"].send_message(
             chat_id,
-            f"⚠️ <b>Ошибка получения данных с Bitget:</b>\n{e}",
+            f"⚠️ <b>Ошибка Bitget:</b>\n{e}",
             parse_mode=ParseMode.HTML
         )
         return
@@ -257,9 +254,8 @@ async def run_consilium(chat_id: int):
     await bots["gena"].send_message(
         chat_id,
         f"🔔 <b>КОНСИЛИУМ НАЧАТ — Boyar Investment</b>\n\n"
-        f"📊 BTC/USDT: <b>${data['price']:,.2f}</b> "
-        f"(<b>{data['change']:+.2f}%</b>)\n\n"
-        f"Команда, докладывайте по очереди. Жду! 👑",
+        f"📊 BTC/USDT: <b>${data['price']:,.2f}</b> ({data['change']:+.2f}%)\n\n"
+        f"Команда, докладывайте по очереди! 👑",
         parse_mode=ParseMode.HTML
     )
     await asyncio.sleep(2)
@@ -275,12 +271,12 @@ async def run_consilium(chat_id: int):
         await asyncio.sleep(random.uniform(3, 5))
 
 # ══════════════════════════════════════════
-#  РЕГИСТРАЦИЯ ХЕНДЛЕРОВ
+#  ХЕНДЛЕРЫ
 # ══════════════════════════════════════════
 MARKET_KEYWORDS = [
-    "курс", "цена", "рынок", "btc", "анализ",
-    "тренд", "риск", "стоп", "вход", "сделка",
-    "покупать", "продавать", "фибоначчи", "rsi",
+    "курс", "цена", "рынок", "btc", "анализ", "тренд",
+    "риск", "стоп", "вход", "сделка", "покупать", "продавать",
+    "фибоначчи", "rsi", "объём", "индикатор",
 ]
 
 def register_handlers(key: str, dp: Dispatcher):
@@ -293,8 +289,8 @@ def register_handlers(key: str, dp: Dispatcher):
         await message.reply(
             f"👋 <b>{display}</b> в сети!\n\n"
             f"Называй моё имя — отвечу.\n"
-            f"<b>/work</b> — запуск консилиума (только Шеф).\n"
-            f"<b>/status</b> — проверка соединения с Bitget.",
+            f"<b>/work</b> — запуск консилиума (только Шеф)\n"
+            f"<b>/status</b> — проверка Bitget",
             parse_mode=ParseMode.HTML
         )
 
@@ -306,7 +302,7 @@ def register_handlers(key: str, dp: Dispatcher):
             await message.reply("🚫 Только Шеф запускает консилиум.")
             return
         await message.reply(
-            "⚡️ <b>Консилиум запущен!</b> Команда, к бою!",
+            "⚡️ <b>Консилиум запущен! Команда, к бою!</b>",
             parse_mode=ParseMode.HTML
         )
         asyncio.create_task(run_consilium(message.chat.id))
@@ -319,9 +315,9 @@ def register_handlers(key: str, dp: Dispatcher):
             data = await fetch_market_data()
             await message.reply(
                 f"✅ <b>Bitget подключён</b>\n\n"
-                f"BTC/USDT: <b>${data['price']:,.2f}</b> "
-                f"({data['change']:+.2f}%)\n"
-                f"RSI: <b>{data['rsi']:.1f}</b>",
+                f"BTC/USDT: <b>${data['price']:,.2f}</b> ({data['change']:+.2f}%)\n"
+                f"RSI: <b>{data['rsi']:.1f}</b> | "
+                f"MA7: <b>${data['ma7']:,.0f}</b>",
                 parse_mode=ParseMode.HTML
             )
         except Exception as e:
@@ -339,9 +335,9 @@ def register_handlers(key: str, dp: Dispatcher):
 
         mentioned = detect_agent(message.text)
         if mentioned != key:
-            return  # Не мой бот — молчу
+            return
 
-        display    = PERSONAS[key]["display"]
+        display     = PERSONAS[key]["display"]
         need_market = any(w in message.text.lower() for w in MARKET_KEYWORDS)
 
         ctx = ""
@@ -352,7 +348,6 @@ def register_handlers(key: str, dp: Dispatcher):
             except Exception as e:
                 ctx = f"(Данные Bitget недоступны: {e})"
 
-        # Убираем имя агента из запроса
         clean_text = message.text
         for alias in PERSONAS[key]["aliases"]:
             clean_text = clean_text.lower().replace(alias, "").strip(" ,!")
@@ -368,15 +363,33 @@ def register_handlers(key: str, dp: Dispatcher):
 #  ЗАПУСК
 # ══════════════════════════════════════════
 async def main():
-    print("🚀 Boyar Investment — запуск агентов...")
+    print("🚀 Boyar Investment — старт...")
+
+    # Сбрасываем вебхуки и старую очередь у всех ботов
+    for key, bot in bots.items():
+        try:
+            await bot.delete_webhook(drop_pending_updates=True)
+            print(f"  🔄 {PERSONAS[key]['display']} — вебхук сброшен")
+        except Exception as e:
+            print(f"  ⚠️ {key} — ошибка сброса: {e}")
+
+    # Регистрируем хендлеры
     for key, dp in dispatchers.items():
         register_handlers(key, dp)
         print(f"  ✅ {PERSONAS[key]['display']} готов")
 
+    # Запускаем поллинг всех ботов параллельно
     tasks = [
-        dp.start_polling(bots[key], handle_signals=False)
+        dp.start_polling(
+            bots[key],
+            handle_signals=False,
+            allowed_updates=["message"],
+            drop_pending_updates=True,
+        )
         for key, dp in dispatchers.items()
     ]
+
+    print("✅ Все агенты запущены!\n")
     await asyncio.gather(*tasks)
 
 if __name__ == "__main__":
