@@ -11,7 +11,7 @@ from aiogram.enums import ParseMode
 #  КОНФИГУРАЦИЯ
 # ══════════════════════════════════════════
 OWNER_ID   = 8515064372
-CHAT_ID    = int(os.getenv("-1003738678087", "0"))
+CHAT_ID    = -1003738678087
 GEMINI_KEY = os.getenv("GEMINI_API_KEY")
 
 genai.configure(api_key=GEMINI_KEY)
@@ -31,7 +31,7 @@ BITGET_SECRET_KEY = os.getenv("BITGET_SECRET_KEY")
 BITGET_PASSPHRASE = os.getenv("BITGET_PASSPHRASE")
 
 # ══════════════════════════════════════════
-#  ЛИЧНОСТИ АГЕНТОВ (System Prompt для Gemini)
+#  ЛИЧНОСТИ АГЕНТОВ
 # ══════════════════════════════════════════
 PERSONAS = {
     "gena": {
@@ -39,10 +39,9 @@ PERSONAS = {
         "aliases": ["геннадий", "гена", "gena", "boss", "босс", "шеф"],
         "system": (
             "Ты — Геннадий, лидер торгового штаба 'Boyar Investment'. "
-            "Ты опытный трейдер с 15-летним стажем. Говоришь уверенно, коротко, по-деловому. "
-            "Даешь финальное одобрение сделкам. Иногда подбадриваешь команду. "
-            "Никогда не паникуешь. Отвечаешь только на русском, используешь HTML теги <b> и <i>. "
-            "Добавляй эмодзи где уместно. Максимум 200 слов."
+            "Опытный трейдер с 15-летним стажем. Говоришь уверенно, коротко, по-деловому. "
+            "Даёшь финальное одобрение сделкам. Никогда не паникуешь. "
+            "Отвечаешь на русском. Используешь HTML теги <b> и <i>. Максимум 200 слов."
         ),
     },
     "vika": {
@@ -51,9 +50,8 @@ PERSONAS = {
         "system": (
             "Ты — Вика, главный аналитик штаба 'Boyar Investment'. "
             "Специалист по трендам, RSI и объёмам. Говоришь эмоционально, с огоньком, "
-            "но данные всегда точные. Любишь графики и цифры. "
-            "Отвечаешь только на русском, используешь HTML теги <b> и <i>. "
-            "Добавляй эмодзи. Максимум 200 слов."
+            "но данные всегда точные. "
+            "Отвечаешь на русском. Используешь HTML теги <b> и <i>. Максимум 200 слов."
         ),
     },
     "demian": {
@@ -63,8 +61,7 @@ PERSONAS = {
             "Ты — Демьян, специалист по ликвидности и стаканам в 'Boyar Investment'. "
             "Ищешь крупные заявки, следишь за bid/ask, видишь куда идут киты. "
             "Говоришь кратко, технично, уверенно. "
-            "Отвечаешь только на русском, используешь HTML теги <b> и <i>. "
-            "Добавляй эмодзи. Максимум 200 слов."
+            "Отвечаешь на русском. Используешь HTML теги <b> и <i>. Максимум 200 слов."
         ),
     },
     "izabella": {
@@ -73,9 +70,8 @@ PERSONAS = {
         "system": (
             "Ты — Изабелла, технический аналитик в 'Boyar Investment'. "
             "Мастер паттернов, уровней Фибоначчи, поддержки и сопротивления. "
-            "Говоришь изящно, но точно. Обожаешь красивые сетапы. "
-            "Отвечаешь только на русском, используешь HTML теги <b> и <i>. "
-            "Добавляй эмодзи. Максимум 200 слов."
+            "Говоришь изящно, но точно. "
+            "Отвечаешь на русском. Используешь HTML теги <b> и <i>. Максимум 200 слов."
         ),
     },
     "leon": {
@@ -83,10 +79,9 @@ PERSONAS = {
         "aliases": ["леон", "leon", "лёня"],
         "system": (
             "Ты — Леон, риск-менеджер штаба 'Boyar Investment'. "
-            "Всегда считаешь стоп-лоссы, плечо x10, сохранность депозита. "
-            "Главная заповедь: сохранить капитал. Иногда занудишь по делу. "
-            "Отвечаешь только на русском, используешь HTML теги <b> и <i>. "
-            "Добавляй эмодзи. Максимум 200 слов."
+            "Считаешь стоп-лоссы, плечо x10, сохранность депозита. "
+            "Главная заповедь: сохранить капитал. "
+            "Отвечаешь на русском. Используешь HTML теги <b> и <i>. Максимум 200 слов."
         ),
     },
     "rustam": {
@@ -96,8 +91,7 @@ PERSONAS = {
             "Ты — Рустам, исполнитель и технический специалист в 'Boyar Investment'. "
             "Работаешь с API Bitget, открываешь/закрываешь сделки. "
             "Говоришь чётко, по-военному. Никаких лишних слов. "
-            "Отвечаешь только на русском, используешь HTML теги <b> и <i>. "
-            "Добавляй эмодзи. Максимум 200 слов."
+            "Отвечаешь на русском. Используешь HTML теги <b> и <i>. Максимум 200 слов."
         ),
     },
     "adrian": {
@@ -107,8 +101,7 @@ PERSONAS = {
             "Ты — Адриан, стратег и аналитик новостного фона в 'Boyar Investment'. "
             "Следишь за макроэкономикой, новостями, настроением рынка. "
             "Думаешь глобально. Говоришь интеллигентно, с весом каждого слова. "
-            "Отвечаешь только на русском, используешь HTML теги <b> и <i>. "
-            "Добавляй эмодзи. Максимум 200 слов."
+            "Отвечаешь на русском. Используешь HTML теги <b> и <i>. Максимум 200 слов."
         ),
     },
 }
@@ -125,7 +118,18 @@ for key, token in TOKENS.items():
         dispatchers[key] = Dispatcher()
 
 # ══════════════════════════════════════════
-#  BITGET ДАННЫЕ
+#  ПРОВЕРКИ ДОСТУПА
+# ══════════════════════════════════════════
+def is_group(message: types.Message) -> bool:
+    """Сообщение из нашей группы."""
+    return message.chat.id == CHAT_ID
+
+def is_owner(message: types.Message) -> bool:
+    """Сообщение от владельца в нашей группе."""
+    return message.chat.id == CHAT_ID and message.from_user.id == OWNER_ID
+
+# ══════════════════════════════════════════
+#  BITGET — РЫНОЧНЫЕ ДАННЫЕ
 # ══════════════════════════════════════════
 async def fetch_market_data() -> dict:
     exchange = ccxt.bitget({
@@ -138,23 +142,23 @@ async def fetch_market_data() -> dict:
         ticker = await exchange.fetch_ticker("BTC/USDT")
         ohlcv  = await exchange.fetch_ohlcv("BTC/USDT", "1h", limit=24)
         ob     = await exchange.fetch_order_book("BTC/USDT", limit=20)
-        closes = [c[4] for c in ohlcv]
-        highs  = [c[2] for c in ohlcv]
-        lows   = [c[3] for c in ohlcv]
-        volumes= [c[5] for c in ohlcv]
 
-        gains  = [max(closes[i]-closes[i-1], 0) for i in range(1, len(closes))]
-        losses = [max(closes[i-1]-closes[i], 0) for i in range(1, len(closes))]
+        closes  = [c[4] for c in ohlcv]
+        highs   = [c[2] for c in ohlcv]
+        lows    = [c[3] for c in ohlcv]
+        volumes = [c[5] for c in ohlcv]
+
+        gains  = [max(closes[i] - closes[i-1], 0) for i in range(1, len(closes))]
+        losses = [max(closes[i-1] - closes[i], 0) for i in range(1, len(closes))]
         avg_g  = sum(gains)  / len(gains)  if gains  else 1
         avg_l  = sum(losses) / len(losses) if losses else 1
         rsi    = 100 - (100 / (1 + avg_g / (avg_l or 1)))
 
-        ma7    = sum(closes[-7:]) / 7
-        ma24   = sum(closes) / len(closes)
+        ma7  = sum(closes[-7:]) / 7
+        ma24 = sum(closes) / len(closes)
 
-        # Фибоначчи
-        high24 = max(highs)
-        low24  = min(lows)
+        high24    = max(highs)
+        low24     = min(lows)
         fib_range = high24 - low24
         fib_levels = {
             "0.236": round(low24 + 0.236 * fib_range, 2),
@@ -163,7 +167,6 @@ async def fetch_market_data() -> dict:
             "0.618": round(low24 + 0.618 * fib_range, 2),
         }
 
-        # Стакан
         bid_wall = max(ob["bids"], key=lambda x: x[1]) if ob["bids"] else [0, 0]
         ask_wall = max(ob["asks"], key=lambda x: x[1]) if ob["asks"] else [0, 0]
 
@@ -185,6 +188,18 @@ async def fetch_market_data() -> dict:
     finally:
         await exchange.close()
 
+def format_market_ctx(data: dict) -> str:
+    return (
+        f"Цена: ${data['price']:,.2f} ({data['change']:+.2f}%)\n"
+        f"Макс/Мин 24ч: ${data['high24']:,.0f} / ${data['low24']:,.0f}\n"
+        f"MA7: ${data['ma7']:,.0f} | MA24: ${data['ma24']:,.0f}\n"
+        f"RSI(24): {data['rsi']:.1f}\n"
+        f"Объём 24ч: ${data['volume']/1e6:.1f}M\n"
+        f"Фибоначчи: 0.382=${data['fib']['0.382']} | 0.618=${data['fib']['0.618']}\n"
+        f"Bid-стена: ${data['bid_wall'][0]:,.0f} | объём {data['bid_wall'][1]:.2f} BTC\n"
+        f"Ask-стена: ${data['ask_wall'][0]:,.0f} | объём {data['ask_wall'][1]:.2f} BTC"
+    )
+
 # ══════════════════════════════════════════
 #  GEMINI — ГЕНЕРАЦИЯ ОТВЕТА
 # ══════════════════════════════════════════
@@ -203,20 +218,8 @@ async def ask_gemini(persona_key: str, user_message: str, market_ctx: str = "") 
     except Exception as e:
         return f"⚠️ Gemini недоступен: {e}"
 
-def format_market_ctx(data: dict) -> str:
-    return (
-        f"Цена: ${data['price']:,.2f} ({data['change']:+.2f}%)\n"
-        f"Макс/Мин 24ч: ${data['high24']:,.0f} / ${data['low24']:,.0f}\n"
-        f"MA7: ${data['ma7']:,.0f} | MA24: ${data['ma24']:,.0f}\n"
-        f"RSI(24): {data['rsi']:.1f}\n"
-        f"Объём 24ч: ${data['volume']/1e6:.1f}M\n"
-        f"Фибоначчи: 0.382=${data['fib']['0.382']} | 0.618=${data['fib']['0.618']}\n"
-        f"Bid-стена: ${data['bid_wall'][0]:,.0f} объём {data['bid_wall'][1]:.2f} BTC\n"
-        f"Ask-стена: ${data['ask_wall'][0]:,.0f} объём {data['ask_wall'][1]:.2f} BTC"
-    )
-
 # ══════════════════════════════════════════
-#  ОПРЕДЕЛЕНИЕ ИМЕНИ АГЕНТА В ТЕКСТЕ
+#  ОПРЕДЕЛЕНИЕ АГЕНТА ПО ИМЕНИ В ТЕКСТЕ
 # ══════════════════════════════════════════
 def detect_agent(text: str) -> str | None:
     lower = text.lower()
@@ -246,23 +249,23 @@ async def run_consilium(chat_id: int):
     except Exception as e:
         await bots["gena"].send_message(
             chat_id,
-            f"⚠️ <b>Ошибка получения данных с Bitget:</b> {e}",
+            f"⚠️ <b>Ошибка получения данных с Bitget:</b>\n{e}",
             parse_mode=ParseMode.HTML
         )
         return
 
-    # Стартовое сообщение от Геннадия
     await bots["gena"].send_message(
         chat_id,
-        f"🔔 <b>КОНСИЛИУМ НАЧАТ</b>\n\n"
-        f"📊 BTC/USDT: <b>${data['price']:,.2f}</b> ({data['change']:+.2f}%)\n"
-        f"Команда, докладывайте по очереди. Жду!",
+        f"🔔 <b>КОНСИЛИУМ НАЧАТ — Boyar Investment</b>\n\n"
+        f"📊 BTC/USDT: <b>${data['price']:,.2f}</b> "
+        f"(<b>{data['change']:+.2f}%</b>)\n\n"
+        f"Команда, докладывайте по очереди. Жду! 👑",
         parse_mode=ParseMode.HTML
     )
     await asyncio.sleep(2)
 
     for agent_key, task in CONSILIUM_PLAN:
-        answer = await ask_gemini(agent_key, task, ctx)
+        answer  = await ask_gemini(agent_key, task, ctx)
         display = PERSONAS[agent_key]["display"]
         await bots[agent_key].send_message(
             chat_id,
@@ -274,55 +277,72 @@ async def run_consilium(chat_id: int):
 # ══════════════════════════════════════════
 #  РЕГИСТРАЦИЯ ХЕНДЛЕРОВ
 # ══════════════════════════════════════════
+MARKET_KEYWORDS = [
+    "курс", "цена", "рынок", "btc", "анализ",
+    "тренд", "риск", "стоп", "вход", "сделка",
+    "покупать", "продавать", "фибоначчи", "rsi",
+]
+
 def register_handlers(key: str, dp: Dispatcher):
-    bot = bots[key]
-
-    def allowed(message: types.Message) -> bool:
-        # Отвечает всем участникам группы
-        return message.chat.id == CHAT_ID
-
-    def owner_only(message: types.Message) -> bool:
-        return (
-            message.chat.id == CHAT_ID and
-            message.from_user.id == OWNER_ID
-        )
 
     @dp.message(Command("start"))
     async def cmd_start(message: types.Message):
-        if not allowed(message):
+        if not is_group(message):
             return
         display = PERSONAS[key]["display"]
         await message.reply(
             f"👋 <b>{display}</b> в сети!\n\n"
-            f"Называй моё имя в сообщении — отвечу.\n"
-            f"Команда <b>/work</b> — запуск консилиума (только для Шефа).",
+            f"Называй моё имя — отвечу.\n"
+            f"<b>/work</b> — запуск консилиума (только Шеф).\n"
+            f"<b>/status</b> — проверка соединения с Bitget.",
             parse_mode=ParseMode.HTML
         )
 
     @dp.message(Command("work"))
     async def cmd_work(message: types.Message):
-        if not owner_only(message):
-            await message.reply("🚫 Только Шеф может запускать консилиум.")
+        if not is_group(message):
             return
-        await message.reply("⚡️ Запускаю консилиум...", parse_mode=ParseMode.HTML)
+        if not is_owner(message):
+            await message.reply("🚫 Только Шеф запускает консилиум.")
+            return
+        await message.reply(
+            "⚡️ <b>Консилиум запущен!</b> Команда, к бою!",
+            parse_mode=ParseMode.HTML
+        )
         asyncio.create_task(run_consilium(message.chat.id))
+
+    @dp.message(Command("status"))
+    async def cmd_status(message: types.Message):
+        if not is_group(message):
+            return
+        try:
+            data = await fetch_market_data()
+            await message.reply(
+                f"✅ <b>Bitget подключён</b>\n\n"
+                f"BTC/USDT: <b>${data['price']:,.2f}</b> "
+                f"({data['change']:+.2f}%)\n"
+                f"RSI: <b>{data['rsi']:.1f}</b>",
+                parse_mode=ParseMode.HTML
+            )
+        except Exception as e:
+            await message.reply(
+                f"❌ <b>Ошибка подключения к Bitget:</b>\n{e}",
+                parse_mode=ParseMode.HTML
+            )
 
     @dp.message(F.text)
     async def handle_mention(message: types.Message):
-        if not allowed(message):
+        if not is_group(message):
             return
-        if message.text is None:
+        if not message.text:
             return
 
         mentioned = detect_agent(message.text)
         if mentioned != key:
-            return  # Не мой бот
+            return  # Не мой бот — молчу
 
-        display = PERSONAS[key]["display"]
-        # Получаем рыночный контекст если вопрос про рынок
-        market_keywords = ["курс", "цена", "рынок", "btc", "анализ", "тренд",
-                           "риск", "стоп", "вход", "сделка", "покупать", "продавать"]
-        need_market = any(w in message.text.lower() for w in market_keywords)
+        display    = PERSONAS[key]["display"]
+        need_market = any(w in message.text.lower() for w in MARKET_KEYWORDS)
 
         ctx = ""
         if need_market:
@@ -332,7 +352,7 @@ def register_handlers(key: str, dp: Dispatcher):
             except Exception as e:
                 ctx = f"(Данные Bitget недоступны: {e})"
 
-        # Убираем имя бота из запроса
+        # Убираем имя агента из запроса
         clean_text = message.text
         for alias in PERSONAS[key]["aliases"]:
             clean_text = clean_text.lower().replace(alias, "").strip(" ,!")
@@ -348,8 +368,10 @@ def register_handlers(key: str, dp: Dispatcher):
 #  ЗАПУСК
 # ══════════════════════════════════════════
 async def main():
+    print("🚀 Boyar Investment — запуск агентов...")
     for key, dp in dispatchers.items():
         register_handlers(key, dp)
+        print(f"  ✅ {PERSONAS[key]['display']} готов")
 
     tasks = [
         dp.start_polling(bots[key], handle_signals=False)
