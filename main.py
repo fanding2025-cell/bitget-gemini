@@ -203,7 +203,7 @@ def format_market_ctx(data: dict) -> str:
 async def ask_gemini(persona_key: str, user_message: str, market_ctx: str = "") -> str:
     persona = PERSONAS[persona_key]
     model   = genai.GenerativeModel(
-        model_name="gemini-2.0-flash",      # ← исправлено
+        model_name="gemini-2.0-flash",      
         system_instruction=persona["system"],
     )
     prompt = user_message
