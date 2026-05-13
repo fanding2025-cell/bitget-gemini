@@ -1,4 +1,4 @@
- import asyncio
+import asyncio
 import os
 import random
 import ccxt.async_support as ccxt
@@ -14,7 +14,7 @@ OWNER_ID   = 8515064372
 CHAT_ID    = -1003738678087
 GEMINI_KEY = os.getenv("GEMINI_API_KEY")
 
-genai.configure(api_key=GEMINI_KEY)
+genai.configure(api_key=GEMINI_API_KEY)
 
 TOKENS = {
     "gena":     os.getenv("TOKEN_GENA"),
